@@ -9,10 +9,10 @@ No,qlog,rtt,note
 8,client_c62654ca2fee5f5431b35e817f9b5e99294165.qlog,24.9843ms,
 9,client_1dbbdbf752140b89b9585472a18065.qlog,23.9844ms,
 10,client_32110f38a5f438a5.qlog,26.9831ms,
-11,client_9837a3a77448a02ecedc.qlog,36.977ms,== 2 roundTrips
+11,client_9837a3a77448a02ecedc.qlog,36.977ms,manual checked 0-rtt
 12,client_e7cd3a8f77b1ffe76d9881.qlog,23.9849ms,
 13,client_b2cc07af855fca0303ca07a2bf8f8787464544.qlog,25.9837ms,
-14,client_969d8568c779626e7fe2f4675fa5ccbd.qlog,35.9783ms,== 2 roundTrips
+14,client_969d8568c779626e7fe2f4675fa5ccbd.qlog,35.9783ms,manual checked 0-rtt
 15,client_4fc94438d0b4a4f90e4ba35da7322c57753b828a.qlog,25.983ms,
 16,client_58e54759d1c565df.qlog,27.9811ms,
 17,client_f6f05db4f8075ca075c22d4f7f7d97ae.qlog,25.9855ms,
@@ -22,9 +22,9 @@ No,qlog,rtt,note
 21,client_efbde21883b4abaca7ec7a1a7c2b04d5.qlog,24.9848ms,
 22,client_653b3d4495918c8f23445909442ca599d188.qlog,27.9817ms,
 23,client_e3e89901de5e59c5.qlog,24.6276ms,
-24,client_ae6fed429c9207dbab.qlog,35.978ms,== 2 roundTrips
-25,client_a243d0715809cd0ef792675c68011f.qlog,79.9516ms,> 2 roundTrips
-26,client_ac7b0bf1c2efe195d39f.qlog,48.9706ms,> 2 roundTrips
+24,client_ae6fed429c9207dbab.qlog,35.978ms,manual checked 0-rtt
+25,client_a243d0715809cd0ef792675c68011f.qlog,79.9516ms,manual checked 0-rtt
+26,client_ac7b0bf1c2efe195d39f.qlog,48.9706ms,manual checked 0-rtt
 27,client_c8b8c650f99974b18fde533f4134.qlog,25.9789ms,
 28,client_0b978a7a6f35a707a898be54ad758f.qlog,24.9842ms,
 29,client_a2b2ac0150974693.qlog,27.9838ms,
@@ -42,7 +42,7 @@ No,qlog,rtt,note
 41,client_6e37cf53fea3f77774aa3f23a2d8d1.qlog,29.9816ms,
 42,client_ee6a9d23a0a13562.qlog,23.985ms,
 43,client_f298740338db6f67453b.qlog,28.9838ms,
-44,client_416ad7df6a0cb0bb11fe59061b3adde3.qlog,39.975ms,> 2 roundTrips
+44,client_416ad7df6a0cb0bb11fe59061b3adde3.qlog,39.975ms,manual checked 0-rtt
 45,client_858b0f59aecc7e156c69c23f164736bfc097.qlog,25.9828ms,
 46,client_b16079a1cb338aaec2f2be091bde.qlog,23.9833ms,
 47,client_ef7ad3449495d245d71259ef7544bb0d5cefacfc.qlog,23.9854ms,
