@@ -17,6 +17,8 @@ import (
 type roundTripCloser interface {
 	http.RoundTripper
 	io.Closer
+	// Kaiyu
+	CloseAfterHandshakeConfirmed() error
 }
 
 // RoundTripper implements the http.RoundTripper interface
@@ -162,6 +164,19 @@ func (r *RoundTripper) Close() error {
 	defer r.mutex.Unlock()
 	for _, client := range r.clients {
 		if err := client.Close(); err != nil {
+			return err
+		}
+	}
+	r.clients = nil
+	return nil
+}
+
+// Kaiyu
+func (r *RoundTripper) CloseAfterHandshakeConfirmed() error {
+	r.mutex.Lock()
+	defer r.mutex.Unlock()
+	for _, client := range r.clients {
+		if err := client.CloseAfterHandshakeConfirmed(); err != nil {
 			return err
 		}
 	}

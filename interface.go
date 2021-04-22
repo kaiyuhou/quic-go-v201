@@ -219,6 +219,9 @@ type EarlySession interface {
 	HandshakeComplete() context.Context
 
 	NextSession() Session
+
+	// Kaiyu
+	IsHandshakeConfirmed() bool // return true if client received the Handshake_DOWN with NEW_TOKEN and NEW_SESSION
 }
 
 // Config contains all configuration data needed for a QUIC server or client.

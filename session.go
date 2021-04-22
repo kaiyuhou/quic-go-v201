@@ -773,6 +773,11 @@ func (s *session) idleTimeoutStartTime() time.Time {
 	return utils.MaxTime(s.lastPacketReceivedTime, s.firstAckElicitingPacketAfterIdleSentTime)
 }
 
+// Kaiyu
+func (s *session) IsHandshakeConfirmed() bool {
+	return s.handshakeConfirmed
+}
+
 func (s *session) handleHandshakeComplete() {
 	s.handshakeComplete = true
 	s.handshakeCompleteChan = nil // prevent this case from ever being selected again

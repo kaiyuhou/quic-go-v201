@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"strconv"
 	"sync"
+	"time"
 
 	"github.com/lucas-clemente/quic-go"
 	"github.com/lucas-clemente/quic-go/internal/protocol"
@@ -195,6 +196,23 @@ func (c *client) Close() error {
 	if c.session == nil {
 		return nil
 	}
+	return c.session.CloseWithError(quic.ErrorCode(errorNoError), "")
+}
+
+// Kaiyu
+func (c *client) CloseAfterHandshakeConfirmed() error {
+	if c.session == nil {
+		return nil
+	}
+
+	//fmt.Printf("[client CloseAfterHandshakeConfirmed()] Close: Comfirmed %s\n", c.session.IsHandshakeConfirmed())
+	for {
+		if c.session.IsHandshakeConfirmed() {
+			break
+		}
+		time.Sleep(time.Microsecond)
+	}
+
 	return c.session.CloseWithError(quic.ErrorCode(errorNoError), "")
 }
 
