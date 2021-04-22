@@ -1,3 +1,54 @@
+# Kaiyu's note
+
+- The `v0.20.1` tag version: Apr 2, 2021, commit `40b124d`: solved many issues in 0-RTT.
+
+- SupportedVersions = []VersionNumber{VersionDraft29, VersionDraft34, VersionDraft32} 
+
+- I didn't see any differenct when using differ version in client. I used VersionDraft32.
+
+Timeline: 
+ - Draft 32: v0.19.0, 11-13-2020
+ - Draft 29: v0.17.1, 06-20-2020
+
+This version suppoert `go` 1.14, 1.15, and 1.16
+
+@TODO: haven't update: Compatible `Wireshark` version of Draft 32: 3.3.1 (v3.3.1-0-gd64aca7966e2)
+
+## Usage
+
+Server
+```
+go run main.go 
+
+# using -v will increate the latency a lot
+go run main.go -v 
+```
+
+Client
+```
+# kaiyhou_client_go
+go run main.go -insecure -interval 5 -numRequest 5 -keylog=key1.key -v -p https://localhost:6121/demo/echo
+go run main.go ... -body "echo body" https://localhost:6121/demo/echo
+go run main.go ... https://localhost:6162/demo/tiles
+go run main.go ... https://localhost:6121/demo/tile
+
+# kaiyhou_client_tls
+go run main.go -insecure -interval 5 -numRequest 5  https://www.google.com
+
+# kaiyhou_client_tcp
+go run main.go -interval 5 -numRequest 5  http://www.google.com
+```
+
+## Implement `roundTripper.CloseAfterHandshakeConfirmed()` 
+
+Diff the following files:
+- http3/client.go
+- http3/roundtrip.go
+- interface.go
+- session.go
+
+
+
 # A QUIC implementation in pure Go
 
 <img src="docs/quic.png" width=303 height=124>
