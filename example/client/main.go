@@ -8,6 +8,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -15,11 +16,21 @@ import (
 
 	"github.com/lucas-clemente/quic-go"
 	"github.com/lucas-clemente/quic-go/http3"
-	"github.com/lucas-clemente/quic-go/internal/testdata"
 	"github.com/lucas-clemente/quic-go/internal/utils"
 	"github.com/lucas-clemente/quic-go/logging"
 	"github.com/lucas-clemente/quic-go/qlog"
 )
+
+// AddRootCA adds the root CA certificate to a cert pool
+func AddRootCA(certPool *x509.CertPool) {
+	caCertRaw, err := ioutil.ReadFile("pauling.crt") // "ca.pem"
+	if err != nil {
+		panic(err)
+	}
+	if ok := certPool.AppendCertsFromPEM(caCertRaw); !ok {
+		panic("Could not add root ceritificate to pool.")
+	}
+}
 
 func main() {
 	verbose := flag.Bool("v", false, "verbose")
@@ -49,11 +60,14 @@ func main() {
 		keyLog = f
 	}
 
-	pool, err := x509.SystemCertPool()
-	if err != nil {
-		log.Fatal(err)
-	}
-	testdata.AddRootCA(pool)
+	//pool, err := x509.SystemCertPool()
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+	//testdata.AddRootCA(pool)
+	pool := x509.NewCertPool()
+	AddRootCA(pool)
+
 
 	var qconf quic.Config
 	if *enableQlog {
