@@ -122,6 +122,11 @@ func (mr *MockQuicSessionMockRecorder) GetVersion() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetVersion", reflect.TypeOf((*MockQuicSession)(nil).GetVersion))
 }
 
+// Kaiyu
+func (m *MockQuicSession) IsHandshakeConfirmed() bool {
+	return true
+}
+
 // HandshakeComplete mocks base method.
 func (m *MockQuicSession) HandshakeComplete() context.Context {
 	m.ctrl.T.Helper()
