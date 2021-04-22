@@ -17,3 +17,4 @@ fuzzing/*/corpus/
 gomock_reflect_*/
 
 .idea
+!pcaps/
