@@ -37,6 +37,12 @@ func (b *binds) Set(v string) error {
 	return nil
 }
 
+// Kaiyu
+// GetCertificatePaths returns the paths to certificate and key
+func GetCertificatePaths() (string, string) {
+	return "pauling.crt", "pauling.key"
+}
+
 // Size is needed by the /demo/upload handler to determine the size of the uploaded file
 type Size interface {
 	Size() int64
@@ -159,7 +165,7 @@ func main() {
 	logger.SetLogTimeFormat("")
 
 	if len(bs) == 0 {
-		bs = binds{"localhost:6121"}
+		bs = binds{":6121"}
 	}
 
 	handler := setupHandler(*www)
