@@ -216,6 +216,13 @@ func (c *client) CloseAfterHandshakeConfirmed() error {
 	return c.session.CloseWithError(quic.ErrorCode(errorNoError), "")
 }
 
+func (c *client) SessionContext() context.Context {
+	if c.session == nil {
+		return nil
+	}
+	return c.session.Context()
+}
+
 func (c *client) maxHeaderBytes() uint64 {
 	if c.opts.MaxHeaderBytes <= 0 {
 		return defaultMaxResponseHeaderBytes

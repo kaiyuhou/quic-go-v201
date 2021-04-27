@@ -47,6 +47,20 @@ Diff the following files:
 - interface.go
 - session.go
 
+## Bugs of issue 776 
+
+https://github.com/lucas-clemente/quic-go/issues/765
+
+if a H3 client is timeout, we cannot resue it because
+ - The lower level session is cancelled
+ - The `streams_map_outgoing_bidi.go` still records the error msg of timeout
+ - The H3 client will get the error msg from stream and kill itself 
+
+This is not a problem when we manual close the H3 client. Because if will empty the clients array in the H3 roundtrip. 
+Thus will generate a new session when reuse the H3 client when call RoundTrip. 
+
+
+
 
 
 # A QUIC implementation in pure Go

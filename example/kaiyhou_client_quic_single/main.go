@@ -81,8 +81,9 @@ func main() {
 
 	qconf := &quic.Config{
 		TokenStore: quic.NewLRUTokenStore(10, 4),
+		//Versions:   []protocol.VersionNumber{protocol.VersionDraft29},
 		Versions:   []protocol.VersionNumber{protocol.VersionDraft32},
-		MaxIdleTimeout:	10 * time.Second,
+		//MaxIdleTimeout:	10 * time.Second,
 		//, protocol.VersionDraft29, protocol.VersionTLS
 		//Versions: [VersionDraft29, VersionDraft32],
 	}
@@ -133,7 +134,7 @@ func main() {
 				//fmt.Printf("[Before Connection] tlcConfig.ClientSessionCache: %s\n", tlcConfig.ClientSessionCache
 			}
 
-			defer roundTripper.CloseAfterHandshakeConfirmed()
+			//defer roundTripper.CloseAfterHandshakeConfirmed()
 			//defer roundTripper.Close()
 
 			for _, addr := range urls {
