@@ -3,7 +3,6 @@ debug.test
 main
 mockgen_tmp.go
 *.qtr
-*.qlog
 *.txt
 race.[0-9]*
 
