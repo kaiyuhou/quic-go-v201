@@ -257,6 +257,12 @@ func (c *client) RoundTrip(req *http.Request) (*http.Response, error) {
 	}
 
 	str, err := c.session.OpenStreamSync(req.Context())
+
+	// Kaiyu
+	if err == quic.Err0RTTRejected {
+		str, err = c.session.NextSession().OpenStreamSync(req.Context())
+	}
+
 	if err != nil {
 		return nil, err
 	}
@@ -275,6 +281,18 @@ func (c *client) RoundTrip(req *http.Request) (*http.Response, error) {
 	}()
 
 	rsp, rerr := c.doRequest(req, str, reqDone)
+
+	// Kaiyu
+	if rerr.err == quic.Err0RTTRejected {
+		str, err := c.session.NextSession().OpenStreamSync(req.Context())
+
+		if err != nil {
+			return nil, err
+		}
+
+		rsp, rerr = c.doRequest(req, str, reqDone)
+	}
+
 	if rerr.err != nil { // if any error occurred
 		close(reqDone)
 		if rerr.streamErr != 0 { // if it was a stream error
