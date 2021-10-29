@@ -39,6 +39,11 @@ go run main.go -insecure -interval 5 -numRequest 5  https://www.google.com
 go run main.go -interval 5 -numRequest 5  http://www.google.com
 ```
 
+## Implement handle `Err0RTTRejected` Message in HTTP3 clinet
+
+Diff the following file:
+ - http3/client.go: in function `RoundTrip`, two places
+
 ## Implement `roundTripper.CloseAfterHandshakeConfirmed()` 
 
 Diff the following files:
