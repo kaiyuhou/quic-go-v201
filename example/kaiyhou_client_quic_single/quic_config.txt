@@ -1,0 +1,55 @@
+# quic-go/config.go:func populateConfig()
+# quic.Config.HandshakeIdleTimeout
+# Idle timeout before completion of the handshake. Defualt: 5s. I would suggest 1s or 0.5s
+HandshakeIdleTimeout 5000
+
+# quic.Config.MaxIdleTimeout
+# Maximum duration that may pass without any incoming network activity. Default: 30s
+MaxIdleTimeout 30
+
+# InitialStreamReceiveWindow, InitialConnectionReceiveWindow, Default: 512 KB
+InitialStreamReceiveWindow 524288
+InitialConnectionReceiveWindow 524288
+
+##############
+## Constant RTT config [quic-go/internal/utils/rtt_stats.go]
+## This can be modified at client side
+
+## The default RTT used before an RTT sample is taken.
+## Worth to try: 5 * time.Millisecond
+# defaultInitialRTT = 100 * time.Millisecond
+
+
+##############
+## Constant params config [quic-go/internal/protocol/params.go]
+## They may need to modified at both client and server sides
+
+## The minimum duration that is used for packet pacing
+## Example: For a packet pacing delay of 200μs, we would send 5 packets at once, wait for 1ms, and so forth.
+## Worth to try: 200 * time.Microsecond
+# const MinPacingDelay = time.Millisecond
+
+## The loss detection timer will not be set to a value smaller than granularity.
+## Worth to try: 200 * time.Microsecond
+# const TimerGranularity = time.Millisecond
+
+## The maximum time that we store 0-RTT packets in order to wait for the corresponding Initial to be received.
+## Worth to try: 5 * time.Millisecond
+# const Max0RTTQueueingDuration = 100 * time.Millisecond
+
+
+###############
+## Constant protocol config [quic-go/internal/protocol/protocol.go]
+## They may need to be modified at both client and server sides
+
+## The minimum size an Initial packet is required to have. I feel 1200 is too large for your experiments
+## Worth to try: 400?
+# const MinInitialPacketSize = 1200
+
+## Default max_ack_delay
+## Worth to try: 5 * time.Millisecond
+# const DefaultMaxAckDelay = 25 * time.Millisecond
+
+
+## QUIC ACK Frequency: https://github.com/quicwg/ack-frequency
+## quic.Config.DisablePathMTUDiscovery, Packets will then be at most 1252 (IPv4) / 1232 (IPv6) bytes in size.

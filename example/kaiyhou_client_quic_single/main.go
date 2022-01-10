@@ -18,6 +18,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
+	"strings"
 	"sync"
 	"time"
 )
@@ -32,6 +34,38 @@ func AddRootCA(certPool *x509.CertPool) {
 	}
 	if ok := certPool.AppendCertsFromPEM(caCertRaw); !ok {
 		panic("Could not add root ceritificate to pool.")
+	}
+}
+
+// Update qconf and tlsConfig based on the quic_config.txt file
+func UpdateConfig(qconf *quic.Config, tlsConfig *tls.Config) {
+	fmt.Println("Update Config from configFile")
+	configFile := "quic_config.txt"
+	b, _ := ioutil.ReadFile(configFile)
+	//fmt.Println(string(b))
+
+	for _, line := range strings.Split(string(b), "\n") {
+		line = strings.TrimSpace(line)
+		if len(line) == 0 || line[0] == '#' {
+			continue
+		}
+
+		kv := strings.Split(line, " ")
+		key := kv[0]
+		value, _ := strconv.ParseInt(kv[1], 10, 64)
+
+		switch key {
+		case "HandshakeIdleTimeout":
+			qconf.HandshakeIdleTimeout = time.Duration(value) * time.Millisecond
+		case "MaxIdleTimeout":
+			qconf.MaxIdleTimeout = time.Duration(value) * time.Second
+		case "InitialStreamReceiveWindow":
+			qconf.InitialStreamReceiveWindow = uint64(value)
+		case "InitialConnectionReceiveWindow":
+			qconf.InitialConnectionReceiveWindow = uint64(value)
+		default:
+			fmt.Printf("Unknown paramater: %s\n", key)
+		}
 	}
 }
 
@@ -83,7 +117,7 @@ func main() {
 		TokenStore: quic.NewLRUTokenStore(10, 4),
 		//Versions:   []protocol.VersionNumber{protocol.VersionDraft29},
 		Versions:   []protocol.VersionNumber{protocol.VersionDraft32},
-		//MaxIdleTimeout:	10 * time.Second,
+		MaxIdleTimeout:	10 * time.Second,
 		//, protocol.VersionDraft29, protocol.VersionTLS
 		//Versions: [VersionDraft29, VersionDraft32],
 	}
@@ -102,7 +136,7 @@ func main() {
 
 	log.Printf("Start Test\n")
 
-	tlcConfig := &tls.Config{
+	tlsConfig := &tls.Config{
 		RootCAs:            pool,
 		InsecureSkipVerify: *insecure,
 		KeyLogWriter:       keyLog,
@@ -110,14 +144,40 @@ func main() {
 		//NextProtos: []string{nextProtoH3},
 	}
 
+	// Kaiyu 2022-01-05
+	UpdateConfig(qconf, tlsConfig)
+
 	roundTripper := &http3.RoundTripper{
-		TLSClientConfig: tlcConfig,
+		TLSClientConfig: tlsConfig,
 		QuicConfig:      qconf,
 	}
 
 	hclient := &http.Client{
 		Transport: roundTripper,
 	}
+
+	//qconf2 := &quic.Config{
+	//	Versions:   []protocol.VersionNumber{protocol.VersionDraft32},
+	//	MaxIdleTimeout:	10 * time.Second,
+	//	//, protocol.VersionDraft29, protocol.VersionTLS
+	//	//Versions: [VersionDraft29, VersionDraft32],
+	//}
+	//
+	//tlcConfig2 := &tls.Config{
+	//	RootCAs:            pool,
+	//	InsecureSkipVerify: *insecure,
+	//	KeyLogWriter:       keyLog,
+	//	//NextProtos: []string{nextProtoH3},
+	//}
+	//
+	//roundTripper2 := &http3.RoundTripper{
+	//	TLSClientConfig: tlcConfig2,
+	//	QuicConfig:      qconf2,
+	//}
+	//
+	//hclient2 := &http.Client{
+	//	Transport: roundTripper2,
+	//}
 
 	no0RttCnt := 0
 
@@ -134,7 +194,9 @@ func main() {
 				//fmt.Printf("[Before Connection] tlcConfig.ClientSessionCache: %s\n", tlcConfig.ClientSessionCache
 			}
 
-			//defer roundTripper.CloseAfterHandshakeConfirmed()
+			defer roundTripper.CloseAfterHandshakeConfirmed()
+			//defer roundTripper2.CloseAfterHandshakeConfirmed()
+
 			//defer roundTripper.Close()
 
 			for _, addr := range urls {
@@ -159,7 +221,10 @@ func main() {
 					//fmt.Printf("[After Connection] qconf.TokenStore: %s\n", qconf.TokenStore)
 					//fmt.Printf("[After Connection] tlcConfig.ClientSessionCache: %s\n", tlcConfig.ClientSessionCache)
 
+					//fmt.Println(hclient)
 					rsp, err := hclient.Do(req)
+
+					//rsp, err := hclient2.Do(req)
 
 					log.Println(time.Since(startTime)) // This time is a litter longer than the wireshark record.
 					// Don't know the reason -> because of DNS
@@ -170,7 +235,31 @@ func main() {
 					}
 
 					if err != nil {
-						log.Fatal(err)
+						log.Println("err after DO")
+						log.Println(err)
+						//time.Sleep(1 * time.Second)
+
+						//log.Fatal(err)
+						//rsp2, err2 := hclient.Do(req)
+						//if err2 != nil {
+						//	log.Println("err2")
+						//	log.Println(err)
+						//} else {
+						//	log.Println("rsp = rsp2")
+						//	rsp = rsp2
+						//}
+						//
+						//if rsp2 == nil {
+						//	log.Println("rsp2 is nil")
+						//	wg.Done()
+						//	return
+						//}
+					}
+
+					if rsp == nil {
+						log.Println("rsp is nil")
+						wg.Done()
+						return
 					}
 
 					if rsp.Body != nil {
